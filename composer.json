@@ -1,0 +1,20 @@
+{
+    "name": "sekjun9878/scope-resolver",
+    "description": "Scope Resolver for PHP-Parser",
+    "minimum-stability": "stable",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Yoo",
+            "email": "michael@yoo.id.au"
+        }
+    ],
+    "require": {
+        "nikic/php-parser": "^2.0.0beta1"
+    },
+    "autoload": {
+        "psr-4": {
+            "sekjun9878\\ScopeResolver\\": "src/"
+        }
+    }
+}
