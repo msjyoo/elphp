@@ -31,7 +31,7 @@ class ScopeResolver extends NodeVisitorAbstract
     public function __construct()
     {
         $this->namespace = new NamespaceName([]);
-        $this->scope[] = new RootNamespaceScope;
+        $this->scope = [new RootNamespaceScope];
     }
 
     public function enterNode(Node $node)
@@ -62,16 +62,15 @@ class ScopeResolver extends NodeVisitorAbstract
 
     public function leaveNode(Node $node)
     {
-        if($node instanceof Stmt\NameSpace_)
+        if($node instanceof Stmt\Namespace_)
         {
-            $this->namespace = new RootNamespaceScope;
+            $this->namespace = new NamespaceName([]);
+            $this->scope = [new RootNamespaceScope];
         }
-        else if(
-            $node instanceof Stmt\Class_
+        elseif($node instanceof Stmt\Class_
             or $node instanceof Stmt\ClassMethod
             or $node instanceof Stmt\Function_
-            or $node instanceof Expr\Closure
-        )
+            or $node instanceof Expr\Closure)
         {
             array_pop($this->scope);
         }
