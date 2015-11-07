@@ -7,12 +7,8 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitorAbstract;
 use sekjun9878\ScopeResolver\NamespaceName;
-use sekjun9878\ScopeResolver\Scope\ClassMethodScope;
-use sekjun9878\ScopeResolver\Scope\ClassScope;
-use sekjun9878\ScopeResolver\Scope\ClosureScope;
+use sekjun9878\ScopeResolver\Scope;
 use sekjun9878\ScopeResolver\Scope\Definition\ScopeInterface;
-use sekjun9878\ScopeResolver\Scope\FunctionScope;
-use sekjun9878\ScopeResolver\Scope\RootNamespaceScope;
 
 /**
  * Class ScopeResolver
@@ -32,7 +28,7 @@ class ScopeResolver extends NodeVisitorAbstract
     public function __construct()
     {
         $this->namespace = new NamespaceName([]);
-        $this->scope = [new RootNamespaceScope];
+        $this->scope = [new Scope\RootNamespaceScope];
     }
 
     public function enterNode(Node $node)
@@ -45,19 +41,19 @@ class ScopeResolver extends NodeVisitorAbstract
         }
         elseif($node instanceof Stmt\Class_)
         {
-            $this->scope[] = new ClassScope($this->namespace, $node->name);
+            $this->scope[] = new Scope\ClassScope($this->namespace, $node->name);
         }
         elseif($node instanceof Stmt\Function_)
         {
-            $this->scope[] = new FunctionScope($this->namespace, $node->name);
+            $this->scope[] = new Scope\FunctionScope($this->namespace, $node->name);
         }
         elseif($node instanceof Stmt\ClassMethod)
         {
-            $this->scope[] = new ClassMethodScope(end($this->scope), $node->name);
+            $this->scope[] = new Scope\ClassMethodScope(end($this->scope), $node->name);
         }
         elseif($node instanceof Expr\Closure)
         {
-            $this->scope[] = new ClosureScope(end($this->scope), $node->getAttribute("startFilePos", mt_rand()));
+            $this->scope[] = new Scope\ClosureScope(end($this->scope), $node->getAttribute("startFilePos", mt_rand()));
         }
     }
 
@@ -66,7 +62,7 @@ class ScopeResolver extends NodeVisitorAbstract
         if($node instanceof Stmt\Namespace_)
         {
             $this->namespace = new NamespaceName([]);
-            $this->scope = [new RootNamespaceScope];
+            $this->scope = [new Scope\RootNamespaceScope];
         }
         elseif($node instanceof Stmt\Class_
             or $node instanceof Stmt\ClassMethod
