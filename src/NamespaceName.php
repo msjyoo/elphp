@@ -8,25 +8,22 @@ namespace sekjun9878\ScopeResolver;
  */
 final class NamespaceName extends \ArrayObject
 {
-    /* In the order of Vendor[0] -> Package[] or ['\'] for root namespace */
-
     /**
-     * @param string|array $namespace
+     * @param string|array $namespace In the order of Vendor[0] -> Package[] or [] for root namespace, or in str format
      */
-    public function __construct($namespace)
+    public function __construct($namespace = [])
     {
         if(is_string($namespace))
         {
-            $namespace = explode("\\", $namespace);
+            // Sanitise empty values from explode e.g. otherwise it prepends some empty values
+            $namespace = array_filter(explode("\\", $namespace));
         }
 
         if(is_array($namespace))
         {
-            foreach($namespace as $token)
-            {
-                $this[] = $token;
-            }
-
+            // Expand slashes that may be present in individual values
+            $namespace = array_filter(explode("\\", implode("\\", $namespace)));
+            $this->exchangeArray($namespace);
             return;
         }
 
@@ -34,10 +31,11 @@ final class NamespaceName extends \ArrayObject
     }
 
     /**
-     * @return string
+     * @return string Will always start with '\' and end with '\'. e.g. '\' for root namespace
      */
     public function __toString()
     {
-        return "\\".implode("\\", $this);
+        // Have fun figuring out how this works!
+        return implode("\\", array_merge([""], $this->getArrayCopy()))."\\";
     }
 }
