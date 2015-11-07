@@ -16,6 +16,7 @@ use sekjun9878\ScopeResolver\Scope\RootNamespaceScope;
 
 /**
  * Class ScopeResolver
+ * @package sekjun9878\ScopeResolver\NodeVisitor
  *
  * @author Michael Yoo <michael@yoo.id.au>
  * @author Bernhard Reiter <ockham@raz.or.at>

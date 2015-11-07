@@ -5,6 +5,10 @@ namespace sekjun9878\ScopeResolver\Scope;
 use sekjun9878\ScopeResolver\NamespaceName;
 use sekjun9878\ScopeResolver\Scope\Definition\ScopeInterface;
 
+/**
+ * Class ClassMethodScope
+ * @package sekjun9878\ScopeResolver\Scope
+ */
 final class ClassMethodScope implements ScopeInterface
 {
     /** @var ScopeInterface $class */
