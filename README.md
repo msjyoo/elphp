@@ -14,11 +14,6 @@ Usage
 Usage is really really really simple.
 
 ```php
-<?php
-
-use PhpParser\ParserFactory;
-use PhpParser\Node;
-use PhpParser\NodeTraverser;
 use sekjun9878\ScopeResolver\NodeVisitor\ScopeResolver;
 
 $parser        = (new ParserFactory)->create(ParserFactory::PREFER_PHP5);
@@ -27,19 +22,8 @@ $traverser     = new NodeTraverser;
 // Add the ScopeResolver visitor
 $traverser->addVisitor(new ScopeResolver);
 
-try {
-    // parse
-    $stmts = $parser->parse($code);
-
-    // traverse
-    $stmts = $traverser->traverse($stmts);
-} catch (PhpParser\Error $e) {
-    echo 'Parse Error: ', $e->getMessage();
-}
+$stmts = $parser->parse($code);
+$stmts = $traverser->traverse($stmts);
 
 // Now every node will have a "scope" attribute attached.
-
-array_walk_recursive((array) $stmts, function (Node $node, $key) {
-    echo get_class($node)." at line ".$node->getLine()." has a scope of ".$node->getAttribute("scope", "Unknown");
-});
 ```
