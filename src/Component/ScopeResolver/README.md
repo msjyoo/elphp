@@ -14,7 +14,7 @@ Usage
 Usage is really really really simple.
 
 ```php
-use sekjun9878\ScopeResolver\NodeVisitor\ScopeResolver;
+use Elphp\Component\ScopeResolver\NodeVisitor\ScopeResolver;
 
 $parser        = (new ParserFactory)->create(ParserFactory::PREFER_PHP5);
 $traverser     = new NodeTraverser;

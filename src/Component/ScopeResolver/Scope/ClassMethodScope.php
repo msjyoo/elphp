@@ -1,13 +1,13 @@
 <?php
 
-namespace sekjun9878\ScopeResolver\Scope;
+namespace Elphp\Component\ScopeResolver\Scope;
 
-use sekjun9878\ScopeResolver\NamespaceName;
-use sekjun9878\ScopeResolver\Scope\Definition\ScopeInterface;
+use Elphp\Component\ScopeResolver\NamespaceName;
+use Elphp\Component\ScopeResolver\Scope\Definition\ScopeInterface;
 
 /**
  * Class ClassMethodScope
- * @package sekjun9878\ScopeResolver\Scope
+ * @package Elphp\Component\ScopeResolver\Scope
  */
 final class ClassMethodScope implements ScopeInterface
 {

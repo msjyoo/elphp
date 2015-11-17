@@ -1,13 +1,13 @@
 <?php
 
-namespace sekjun9878\ScopeResolver\Scope;
+namespace Elphp\Component\ScopeResolver\Scope;
 
-use sekjun9878\ScopeResolver\NamespaceName;
-use sekjun9878\ScopeResolver\Scope\Definition\ScopeInterface;
+use Elphp\Component\ScopeResolver\NamespaceName;
+use Elphp\Component\ScopeResolver\Scope\Definition\ScopeInterface;
 
 /**
  * Class ClosureScope
- * @package sekjun9878\ScopeResolver\Scope
+ * @package Elphp\Component\ScopeResolver\Scope
  */
 final class ClosureScope implements ScopeInterface
 {
@@ -56,7 +56,7 @@ final class ClosureScope implements ScopeInterface
      */
     public function __toString()
     {
-        if($this->parent instanceof RootNamespaceScope or (strlen($this->parent) === 1 and $this->parent{0} === "\\"))
+        if($this->parent instanceof NamespaceScope and (strlen($this->parent) === 1 and $this->parent{0} === "\\"))
         {
             return $this->parent."Closure{$this->identifier}";
         }

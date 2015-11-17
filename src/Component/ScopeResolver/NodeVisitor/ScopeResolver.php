@@ -1,18 +1,18 @@
 <?php
 
-namespace sekjun9878\ScopeResolver\NodeVisitor;
+namespace Elphp\Component\ScopeResolver\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitorAbstract;
-use sekjun9878\ScopeResolver\NamespaceName;
-use sekjun9878\ScopeResolver\Scope;
-use sekjun9878\ScopeResolver\Scope\Definition\ScopeInterface;
+use Elphp\Component\ScopeResolver\NamespaceName;
+use Elphp\Component\ScopeResolver\Scope;
+use Elphp\Component\ScopeResolver\Scope\Definition\ScopeInterface;
 
 /**
  * Class ScopeResolver
- * @package sekjun9878\ScopeResolver\NodeVisitor
+ * @package Elphp\Component\ScopeResolver\NodeVisitor
  *
  * @author Michael Yoo <michael@yoo.id.au>
  * @author Bernhard Reiter <ockham@raz.or.at>
@@ -28,16 +28,18 @@ class ScopeResolver extends NodeVisitorAbstract
     public function __construct()
     {
         $this->namespace = new NamespaceName([]);
-        $this->scope = [new Scope\RootNamespaceScope];
+        $this->scope = [new Scope\NamespaceScope($this->namespace)];
     }
 
     public function enterNode(Node $node)
     {
         $node->setAttribute("scope", end($this->scope));
 
-        if($node instanceof Stmt\Namespace_ and !empty($node->name))
+        if($node instanceof Stmt\Namespace_ and !empty($node->name)) // False if entering root namespace
         {
             $this->namespace = new NamespaceName($node->name->parts);
+            $this->scope[] = new Scope\NamespaceScope($this->namespace);
+
         }
         elseif($node instanceof Stmt\Class_)
         {
@@ -53,8 +55,13 @@ class ScopeResolver extends NodeVisitorAbstract
         }
         elseif($node instanceof Expr\Closure)
         {
-            $this->scope[] = new Scope\ClosureScope(end($this->scope), $node->getAttribute("startFilePos", mt_rand()));
+            $identifier = $node->getAttribute("startFilePos", mt_rand());
+            $node->setAttribute("identifier", $identifier); // The Closure node now has identifier for common use
+
+            $this->scope[] = new Scope\ClosureScope(end($this->scope), $identifier);
         }
+
+        $node->setAttribute("scopeInner", end($this->scope));
     }
 
     public function leaveNode(Node $node)
@@ -62,9 +69,10 @@ class ScopeResolver extends NodeVisitorAbstract
         if($node instanceof Stmt\Namespace_)
         {
             $this->namespace = new NamespaceName([]);
-            $this->scope = [new Scope\RootNamespaceScope];
+            $this->scope = [new Scope\NamespaceScope($this->namespace)];
         }
-        elseif($node instanceof Stmt\Class_
+
+        if($node instanceof Stmt\Class_
             or $node instanceof Stmt\ClassMethod
             or $node instanceof Stmt\Function_
             or $node instanceof Expr\Closure)

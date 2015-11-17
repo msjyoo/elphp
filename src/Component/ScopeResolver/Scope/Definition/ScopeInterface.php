@@ -1,12 +1,12 @@
 <?php
 
-namespace sekjun9878\ScopeResolver\Scope\Definition;
+namespace Elphp\Component\ScopeResolver\Scope\Definition;
 
-use sekjun9878\ScopeResolver\NamespaceName;
+use Elphp\Component\ScopeResolver\NamespaceName;
 
 /**
  * Interface ScopeInterface
- * @package sekjun9878\ScopeResolver\Scope\Definition
+ * @package Elphp\Component\ScopeResolver\Scope\Definition
  */
 interface ScopeInterface
 {

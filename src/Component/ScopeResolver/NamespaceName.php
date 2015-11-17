@@ -1,10 +1,10 @@
 <?php
 
-namespace sekjun9878\ScopeResolver;
+namespace Elphp\Component\ScopeResolver;
 
 /**
  * Class NamespaceName
- * @package sekjun9878\ScopeResolver
+ * @package Elphp\Component\ScopeResolver
  */
 final class NamespaceName extends \ArrayObject
 {
