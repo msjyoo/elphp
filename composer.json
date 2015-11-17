@@ -1,20 +1,22 @@
 {
-    "name": "sekjun9878/scope-resolver",
-    "description": "Scope Resolver for PHP-Parser",
+    "name": "elphp/elphp",
+    "description": "A PHP static toolkit that really understands your code.",
     "minimum-stability": "stable",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Michael Yoo",
-            "email": "michael@yoo.id.au"
-        }
-    ],
     "require": {
-        "nikic/php-parser": "^2.0.0beta1"
+        "nikic/php-parser": "^2.0.0beta1",
+        "phpdocumentor/reflection-docblock": "^2.0.4",
+        "symfony/console": "^2.7.6",
+        "rdlowrey/auryn": "^1.1.0",
+        "league/flysystem": "^1.0",
+        "doctrine/dbal": "2.5.2"
     },
     "autoload": {
         "psr-4": {
-            "sekjun9878\\ScopeResolver\\": "src/"
+            "Elphp\\": "src/"
         }
-    }
+    },
+    "bin": [
+        "app/elphp"
+    ]
 }
