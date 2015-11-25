@@ -15,17 +15,17 @@ final class DocTypeNormaliser
      *
      * @return array|string
      */
-    public function normalise($type)
+    public static function normalise($type)
     {
         if(is_array($type))
         {
             return array_unique(array_map(function ($part) {
-                return $this->normalisePart($part);
+                return self::normalisePart($part);
             }, $type));
         }
 
         return implode("|", array_unique(array_map(function ($part) {
-            return $this->normalisePart($part);
+            return self::normalisePart($part);
         }, explode("|", (string) $type))));
     }
 
@@ -36,7 +36,7 @@ final class DocTypeNormaliser
      *
      * @return string
      */
-    public function normalisePart($string)
+    public static function normalisePart($string)
     {
         switch($string)
         {
@@ -47,7 +47,7 @@ final class DocTypeNormaliser
             case "double":
                 return "float";
             case "number":
-                return "float"; // Be safe in operations, prohibit integer-only ops
+                return "float"; // Be safe in operations, prohibit integer-only ops TODO: actually this should return both int and float
             case "NULL":
                 return "null";
             default:
@@ -62,7 +62,7 @@ final class DocTypeNormaliser
      *
      * @return bool Returns true if the keyword is a part of PHPDoc Types
      */
-    public function isKeyword($string)
+    public static function isKeyword($string)
     {
         switch($string)
         {
@@ -92,5 +92,27 @@ final class DocTypeNormaliser
             default:
                 return false;
         }
+    }
+
+    /**
+     * Sanitise a tag string for use in parsing.
+     * In some cases, a tag may be spread out over multiple lines, such as a malformed return tag.
+     * This function sanitises those tags so newlines and HTML tags are removed.
+     *
+     * Example:
+     *
+     * Turns:
+     * (at)return string
+     * $string
+     *
+     * Into: (at)return string $string
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    public static function sanitise($string)
+    {
+        return str_replace("\n", "", str_replace("\r\n", "\n", strip_tags($string)));
     }
 }

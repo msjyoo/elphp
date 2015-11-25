@@ -1,0 +1,39 @@
+<?php
+
+require __DIR__.'/../vendor/autoload.php';
+
+$injector = new \Auryn\Injector;
+
+$injector->delegate(\League\Flysystem\Filesystem::class, function () use ($injector) {
+    $adapter = new \League\Flysystem\Adapter\Local(__DIR__.'/../');
+
+    return new League\Flysystem\Filesystem($adapter);
+});
+$injector->share(\League\Flysystem\Filesystem::class);
+
+// DBAL
+$injector->delegate(\Doctrine\DBAL\Connection::class, function () use ($injector) {
+    return \Doctrine\DBAL\DriverManager::getConnection([
+        "driver" => "pdo_sqlite",
+        "memory" => true
+    ]);
+});
+$injector->share(\Doctrine\DBAL\Connection::class);
+
+// Application
+$injector->define(\Symfony\Component\Console\Application::class, [
+    ":name" => "Elphp",
+    ":version" => "0.0.1-dev"
+]);
+
+$injector->prepare(\Symfony\Component\Console\Application::class,
+    function (\Symfony\Component\Console\Application $application, \Auryn\Injector $injector) {
+        $application->add($injector->make(\Elphp\Command\ListCommand\ListFunctionsCommand::class));
+        $application->add($injector->make(\Elphp\Command\ListCommand\ListVariablesCommand::class));
+    }
+);
+
+$application = $injector->make(\Symfony\Component\Console\Application::class);
+$application->run(); // TODO: make a simple function return type dumper first to build on
+
+/* vim: set ft=php : */

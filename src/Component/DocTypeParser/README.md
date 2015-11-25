@@ -1,0 +1,1 @@
+This TypeParser infers data types from doc comments and returns it.

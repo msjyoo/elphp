@@ -56,7 +56,7 @@ final class ClosureScope implements ScopeInterface
      */
     public function __toString()
     {
-        if($this->parent instanceof NamespaceScope and (strlen($this->parent) === 1 and $this->parent{0} === "\\"))
+        if($this->parent instanceof NamespaceScope and (strlen($this->parent) === 1 and $_ = (string) $this->parent and $_{0} === "\\"))
         {
             return $this->parent."Closure{$this->identifier}";
         }

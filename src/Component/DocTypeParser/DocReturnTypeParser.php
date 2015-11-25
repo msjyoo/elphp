@@ -7,21 +7,23 @@ use PhpParser\Node;
 use phpDocumentor\Reflection\DocBlock;
 use PhpParser\Node\FunctionLike;
 
+use function Elphp\Component\ArrayTools\last;
+
 /**
- * Class DocReturnTypeResolver
+ * Class DocReturnTypeParser
  * @package Elphp\Component\DocTypeParser
  */
-final class DocReturnTypeResolver
+final class DocReturnTypeParser
 {
     /**
      * @param string $string A string of the return tag comment, without the return keyword
      *
      * @return array An array of the return types
      */
-    public function resolve($string)
+    public static function parse($string)
     {
-        return (new DocTypeNormaliser)->normalise(
-            explode("|", $string)
+        return DocTypeNormaliser::normalise(
+            explode("|", strtok($string, " "))
         );
     }
 
@@ -30,11 +32,10 @@ final class DocReturnTypeResolver
      *
      * @return array A array of the return types, or empty array if no return comment exists
      */
-    public function resolveNode(FunctionLike $node)
+    public static function parseNode(FunctionLike $node)
     {
-        // @formatter:off
-        /** @var Comment[] $returnComments  */
-        $returnComments = $this->filterCommentReturn($node->getAttribute("comments", []));
+        /** @var Comment[] $returnComments */
+        $returnComments = self::filterComments($node->getAttribute("comments", []));
 
         if(empty($returnComments))
         {
@@ -42,17 +43,14 @@ final class DocReturnTypeResolver
         }
 
         /** @var DocBlock\Tag $lastReturnKeyword If multiple "@return" tags, only the last one in last DocBlock used. */
-        $lastReturnKeyword = end(
+        $lastReturnKeyword = last(
             (new DocBlock(
-                end($returnComments)->getReformattedText()
+                last($returnComments)->getReformattedText()
             ))->getTagsByName("return")
         );
 
-        //if($node->)var_dump((explode(" ", $lastReturnKeyword->getContent())));
-
         // Everything after the tag (after the appending space), is tag content.
-        return $this->resolve(strip_tags(explode(" ",
-            str_replace("\n", " ", str_replace("\r\n", "\n", $lastReturnKeyword->getContent())))[0]));
+        return self::parse(DocTypeNormaliser::sanitise($lastReturnKeyword->getContent()));
     }
 
     /**
@@ -63,7 +61,7 @@ final class DocReturnTypeResolver
      *
      * @return Comment[]
      */
-    public function filterCommentReturn(array $comments)
+    public static function filterComments(array $comments)
     {
         // @formatter:off
         return array_filter(

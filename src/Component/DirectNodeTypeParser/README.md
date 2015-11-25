@@ -1,0 +1,1 @@
+This type parser infers data types from PHP-Parser's Node objects and returns it.
